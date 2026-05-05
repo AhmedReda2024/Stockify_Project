@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Streamline your small business with Stockify, the fast and intuitive inventory management system. Track stock easily and boost productivity. Try it today!"
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://www.yourdomain.com/inventory-management-system"
+    />
+    <meta
+      property="og:title"
+      content="Stockify | Simple Inventory Management for Small Business"
+    />
+    <meta
+      property="og:description"
+      content="Streamline your small business with Stockify, the fast and intuitive inventory management system. Track stock easily and boost productivity. Try it today!"
+    />
+    <meta
+      property="og:image"
+      content="https://www.yourdomain.com/assets/stockify-social-banner.jpg"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Stockify | Simple Inventory Management for Small Business"
+    />
+    <meta
+      name="twitter:description"
+      content="Streamline your small business with Stockify, the fast and intuitive inventory management system. Track stock easily and boost productivity. Try it today!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.yourdomain.com/assets/stockify-social-banner.jpg"
+    />
+
+    <title>Stockify | Simple Inventory Management for Small Business</title>
+
+    <link
+      rel="shortcut icon"
+      href="./images/Stockify-logo.ico"
+      type="image/x-icon"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@200..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <section class="product-section py-5">
+      <div class="title text-center shadow border mb-5">
+        <h2 class="text-uppercase">
+          <span class="text-primary">s</span>tockify
+          <span class="text-primary">s</span>tore
+        </h2>
+      </div>
+
+      <div class="product-form w-75 mx-auto">
+        <div class="form-floating mb-3">
+          <input
+            oninput="isProductInputsValid(productRegex.productNameRegex, this)"
+            type="text"
+            class="form-control border-0 border-bottom rounded-0"
+            id="productName"
+            placeholder=""
+          />
+          <p class="text-danger mt-2 fw-medium d-none">
+            Product name must start with capital letter followed by at least two
+            character.
+          </p>
+          <label for="productName">Product Name</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input
+            oninput="isProductInputsValid(productRegex.productPriceRegex, this)"
+            type="number"
+            class="form-control border-0 border-bottom rounded-0"
+            id="productPrice"
+            placeholder=""
+          />
+          <p class="text-danger mt-2 fw-medium d-none">
+            Product price must be greater than zero.
+          </p>
+          <label for="productPrice">Product Price</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input
+            oninput="
+              isProductInputsValid(productRegex.productCategoryRegex, this)
+            "
+            class="form-control border-0 border-bottom rounded-0"
+            type="text"
+            name="productCategories"
+            id="productCategory"
+            list="productCategories"
+          />
+          <p class="text-danger mt-2 fw-medium d-none">
+            Please choose one of these categories (Mobile, Headphones, TV,
+            Printer, Laptop, Camera).
+          </p>
+          <datalist id="productCategories">
+            <option value="Mobile" />
+            <option value="Headphones" />
+            <option value="Laptop" />
+            <option value="Camera" />
+            <option value="Printer" />
+            <option value="TV" />
+          </datalist>
+          <label for="productCategory">Product Category</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <textarea
+            oninput="
+              isProductInputsValid(productRegex.productDescriptionRegex, this)
+            "
+            class="form-control border-0 border-bottom rounded-0"
+            placeholder=""
+            id="productDescription"
+          ></textarea>
+          <p class="text-danger mt-2 fw-medium d-none">
+            Product description must be at least 4 characters.
+          </p>
+          <label for="productDescription">Product Description</label>
+        </div>
+
+        <div class="form-floating mb-4">
+          <input
+            onchange="isProductImageInputValid()"
+            type="file"
+            class="form-control border-0 border-bottom rounded-0"
+            id="productImage"
+            placeholder=""
+          />
+          <p class="text-danger mt-2 fw-medium d-none">
+            Please choose image for your product
+          </p>
+
+          <label for="productImage">Product Image</label>
+        </div>
+
+        <div class="d-flex gap-3 align-items-center">
+          <button
+            onclick="addProducts()"
+            id="addBtn"
+            class="btn btn-primary flex-grow-1 py-2 fw-medium fs-5 add-btn"
+          >
+            <i class="fa-solid fa-plus me-2"></i>Add Product
+          </button>
+          <button
+            onclick="updateProduct()"
+            id="updateBtn"
+            class="btn btn-warning flex-grow-1 py-2 fw-medium fs-5 update-btn d-none"
+          >
+            <i class="fa-solid fa-pen-to-square me-2"></i>Update Product
+          </button>
+          <button
+            onclick="clearProducts()"
+            id="clearBtn"
+            class="btn btn-danger py-2 fw-medium fs-5 px-4 clear-btn"
+          >
+            <i class="fa-solid fa-trash-can me-2"></i>Clear All
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="search-section my-4">
+      <div class="container-fluid">
+        <div class="search-wrapper w-75 mx-auto">
+          <input
+            type="search"
+            oninput="searchProducts(this)"
+            class="form-control custom-search-input"
+            id="search"
+            placeholder="Search By Name Or Category..."
+          />
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-5">
+      <div class="container-fluid">
+        <div id="rowData" class="row g-4"></div>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,122 @@
+body {
+  font-family: "Oswald", sans-serif;
+}
+
+.product-section .title {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.product-section .product-form .form-control,
+.product-section .product-form .form-select {
+  border-width: 2px !important;
+}
+
+.product-section .product-form .form-control:focus,
+.product-section .product-form .form-select:focus {
+  box-shadow: none;
+  border-color: darkblue !important;
+}
+
+/* --- Professional Search Input Design --- */
+.search-wrapper {
+  position: relative;
+  border-radius: 50px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 24px rgba(13, 37, 63, 0.08);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.search-wrapper:hover {
+  box-shadow: 0 12px 32px rgba(13, 37, 63, 0.12);
+  transform: translateY(-2px);
+}
+
+.custom-search-input {
+  border: 2px solid #eee !important;
+  border-radius: 50px !important;
+  padding: 0.9rem 1.5rem 0.9rem 3.5rem !important;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  background-color: transparent;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+}
+
+.custom-search-input::placeholder {
+  color: #a0aab5;
+  font-weight: 300;
+}
+
+.custom-search-input:focus {
+  border-color: darkblue !important;
+  box-shadow: 0 0 0 4px rgba(0, 0, 139, 0.15) !important;
+  background-color: #ffffff;
+  outline: none;
+}
+
+.search-wrapper .search-icon {
+  position: absolute;
+  top: 50%;
+  left: 1.5rem;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  color: #a0aab5;
+  transition: color 0.3s ease;
+  pointer-events: none;
+}
+
+.custom-search-input:focus ~ .search-icon {
+  color: darkblue;
+}
+
+/* --- Buttons Design --- */
+.product-form .add-btn,
+.product-form .clear-btn {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+}
+
+.product-form .add-btn {
+  background-color: darkblue !important;
+  border-color: darkblue !important;
+}
+
+.product-form .add-btn:hover {
+  background-color: #000066 !important;
+  border-color: #000066 !important;
+  box-shadow: 0 6px 12px rgba(0, 0, 139, 0.25);
+  transform: translateY(-2px);
+}
+
+.product-form .clear-btn {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: white !important;
+}
+
+.product-form .clear-btn:hover {
+  background-color: #c82333 !important;
+  border-color: #bd2130 !important;
+  box-shadow: 0 6px 12px rgba(220, 53, 69, 0.25);
+  transform: translateY(-2px);
+}
+
+.product-form .clear-btn:active,
+.product-form .add-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-form .form-control.is-valid,
+.product-form .form-control.is-valid:focus {
+  border-color: #198754 !important;
+}
+.product-form .form-control.is-invalid,
+.product-form .form-control.is-invalid:focus {
+  border-color: #dc3545 !important;
+}
