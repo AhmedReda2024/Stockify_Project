@@ -288,7 +288,3 @@ function isProductImageInputValid() {
     return false;
   }
 }
-
-
-
-Array.from()
