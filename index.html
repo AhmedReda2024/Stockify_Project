@@ -82,8 +82,8 @@
             placeholder=""
           />
           <p class="text-danger mt-2 fw-medium d-none">
-            Product name must start with capital letter followed by at least two
-            character.
+            Invalid product name. Please enter 3 to 100 characters using
+            letters, numbers, and valid symbols.
           </p>
           <label for="productName">Product Name</label>
         </div>
@@ -97,34 +97,35 @@
             placeholder=""
           />
           <p class="text-danger mt-2 fw-medium d-none">
-            Product price must be greater than zero.
+            Invalid input. Please enter a number between 10 and 999999,
+            consisting of 2 to 6 digits, and it must not start with 0.
           </p>
           <label for="productPrice">Product Price</label>
         </div>
 
         <div class="form-floating mb-3">
-          <input
+          <select
+            class="form-select border-0 border-bottom rounded-0"
             oninput="
               isProductInputsValid(productRegex.productCategoryRegex, this)
             "
-            class="form-control border-0 border-bottom rounded-0"
-            type="text"
             name="productCategories"
             id="productCategory"
-            list="productCategories"
-          />
+          >
+            <option value="" disabled selected hidden>
+              Choose product category
+            </option>
+            <option value="Mobile">Mobile</option>
+            <option value="Headphones">Headphones</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Camera">Camera</option>
+            <option value="Printer">Printer</option>
+            <option value="TV">TV</option>
+          </select>
           <p class="text-danger mt-2 fw-medium d-none">
             Please choose one of these categories (Mobile, Headphones, TV,
             Printer, Laptop, Camera).
           </p>
-          <datalist id="productCategories">
-            <option value="Mobile" />
-            <option value="Headphones" />
-            <option value="Laptop" />
-            <option value="Camera" />
-            <option value="Printer" />
-            <option value="TV" />
-          </datalist>
           <label for="productCategory">Product Category</label>
         </div>
 
@@ -138,7 +139,8 @@
             id="productDescription"
           ></textarea>
           <p class="text-danger mt-2 fw-medium d-none">
-            Product description must be at least 4 characters.
+            Invalid product description. Please enter 10 to 500 characters using
+            letters, numbers, and valid symbols.
           </p>
           <label for="productDescription">Product Description</label>
         </div>

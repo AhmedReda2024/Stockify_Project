@@ -9,20 +9,21 @@ const updateBtn = document.getElementById("updateBtn");
 const clearBtn = document.getElementById("clearBtn");
 let productList = [];
 let updateIndex = 0;
-
+// get products from local storage
 if (localStorage.getItem("productList") !== null) {
   productList = JSON.parse(localStorage.getItem("productList"));
 }
 displayProducts(productList);
-
+// set regex for inputs
 var productRegex = {
-  productNameRegex: /^[A-Z][\sa-z0-9_]{2,}$/,
+  productNameRegex: /^(?=.*[A-Za-z])[A-Za-z0-9\s&()'.,\-]{3,100}$/,
   productPriceRegex: /^[1-9][0-9]{1,5}$/,
   productCategoryRegex: /^(Mobile|Headphones|Laptop|Camera|Printer|TV)$/,
-  productDescriptionRegex: /^[a-zA-z].{3,}$/,
+  productDescriptionRegex:
+    /^(?=.*[A-Za-z0-9])[A-Za-z0-9\s.,!@#$%^&*()_\-+=:;"'/?<>[\]{}|`~]{10,500}$/,
 };
-
 function addProducts() {
+  // check all inputs are valid before adding
   if (
     isProductInputsValid(productRegex.productNameRegex, productNameInput) &&
     isProductInputsValid(productRegex.productPriceRegex, productPriceInput) &&
@@ -43,43 +44,64 @@ function addProducts() {
       description: productDescriptionInput.value,
       image: `./images/${productImageInput.files[0]?.name ? productImageInput.files[0]?.name : "placeholder.png"}`,
     };
-
     productList.push(product);
     localStorage.setItem("productList", JSON.stringify(productList));
     displayProducts(productList);
     resetAllInputs();
-
-    Swal.fire({
-      title: "Added!",
-      text: "Product has been added successfully",
-      icon: "success",
-    });
+    // after adding
+    fireSwalSuccess("Added!", "Product has been added successfully");
   } else {
-    Swal.fire({
-      icon: "error",
-      title: "Missing Name",
-      text: "Please enter a name for the product!",
-    });
+    if (
+      !isProductInputsValid(productRegex.productNameRegex, productNameInput)
+    ) {
+      fireSwalError("Missing Name", "Please enter a name for the product!");
+    } else if (
+      !isProductInputsValid(productRegex.productPriceRegex, productPriceInput)
+    ) {
+      fireSwalError("Missing Price", "Please enter a price for the product!");
+    } else if (
+      !isProductInputsValid(
+        productRegex.productCategoryRegex,
+        productCategoryInput,
+      )
+    ) {
+      fireSwalError(
+        "Missing Category",
+        "Please enter a category for the product!",
+      );
+    } else if (
+      !isProductInputsValid(
+        productRegex.productDescriptionRegex,
+        productDescriptionInput,
+      )
+    ) {
+      fireSwalError(
+        "Missing Description",
+        "Please enter a description for the product!",
+      );
+    } else if (!isProductImageInputValid()) {
+      fireSwalError("Missing Image", "Please enter an image for the product!");
+    } else {
+      fireSwalError("Missing Data", "Please fill all inputs correctly!");
+    }
   }
 }
-
 function resetAllInputs() {
+  // clear inputs
   productNameInput.value = "";
   productPriceInput.value = "";
   productCategoryInput.value = "";
   productDescriptionInput.value = "";
   productImageInput.value = "";
-
+  // remove valid classes
   productNameInput.classList.remove("is-valid");
   productPriceInput.classList.remove("is-valid");
   productCategoryInput.classList.remove("is-valid");
   productDescriptionInput.classList.remove("is-valid");
   productImageInput.classList.remove("is-valid");
 }
-
 function displayProducts(products) {
   let cartona = ``;
-
   if (products.length === 0) {
     document.getElementById("rowData").innerHTML = `
       <div class="col-12 text-center py-5">
@@ -90,56 +112,54 @@ function displayProducts(products) {
         <p class="text-secondary">It looks like your inventory is empty. Start adding some products using the form above!</p>
       </div>
     `;
-    return; // return ---> we don't return a value ---> Stop Func
-    // Pattern --> Early Return
+    return;
   }
-
   for (let i = 0; i < products.length; i++) {
     cartona += `
-           <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card">
-              <img style="height: 250px;" src="${products[i].image}" class="card-img-top" alt="..." />
-              <div class="card-body">
-                <span class="badge bg-primary mb-2">${products[i].category}</span>
-
-                <h3 class="card-title h5 mb-2">${products[i].name}</h3>
-                <p class="card-text mb-2">
+          <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card card h-100">
+              <div class="product-image-wrapper">
+                <img src="${products[i].image}" class="card-img-top product-image" alt="${products[i].name}" />
+                <div class="product-badges">
+                  <span class="badge product-badge-category">${products[i].category}</span>
+                </div>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <h3 class="product-title h5 mb-2" title="${products[i].name}">${products[i].name}</h3>
+                <p class="product-description card-text mb-3 flex-grow-1">
                   ${products[i].description}
                 </p>
-
-                <div class="d-flex align-items-center gap-1 mb-2">
-                  <div class="d-flex text-warning">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="product-rating d-flex gap-1 me-2">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="far fa-star"></i>
                   </div>
-                  <span class="text-xs text-gray-400 font-medium">
-                    4.2 (12)</span
-                  >
+                  <span class="product-rating-count fw-medium">4.2 (12)</span>
                 </div>
-
-                <div>
-                  <span class="d-block mb-2 fs-5 fw-medium">${products[i].price} EGP</span>
+                <div class="product-footer pt-3 border-top mt-auto d-flex align-items-center justify-content-between">
+                  <span class="product-price d-block fs-5 fw-bold mb-0">
+                    ${products[i].price} <span class="price-currency">EGP</span>
+                  </span>
+                  <div class="product-crud-actions d-flex gap-2">
+                    <button onclick="setDataToInputs(${
+                      products.length < productList.length
+                        ? products[i].oldIndex
+                        : i
+                    })" class="btn btn-action-edit" title="Edit">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button onclick="deleteProducts(${
+                      products.length < productList.length
+                        ? products[i].oldIndex
+                        : i
+                    })" class="btn btn-action-delete" title="Delete">
+                      <i class="fa-solid fa-trash-can"></i> 
+                    </button>
+                  </div>
                 </div>
-
-                <div>
-                  <button onclick="setDataToInputs(${
-                    products.length < productList.length
-                      ? products[i].oldIndex
-                      : i
-                  })" class="btn btn-outline-warning d-block w-100 mb-3">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                  </button>
-                  <button onclick="deleteProducts(${
-                    products.length < productList.length
-                      ? products[i].oldIndex
-                      : i
-                  })" class="btn btn-outline-danger d-block w-100">
-                    <i class="fa-solid fa-trash-can"></i> 
-                  </button>
-                </div> 
               </div>
             </div>
           </div>
@@ -147,7 +167,6 @@ function displayProducts(products) {
   }
   document.getElementById("rowData").innerHTML = cartona;
 }
-
 function deleteProducts(index) {
   Swal.fire({
     title: "Delete Product?",
@@ -163,21 +182,14 @@ function deleteProducts(index) {
       localStorage.setItem("productList", JSON.stringify(productList));
       displayProducts(productList);
       searchInput.value = "";
-
-      Swal.fire({
-        title: "Deleted!",
-        text: "Product has been deleted.",
-        icon: "success",
-      });
+      // after delete
+      fireSwalSuccess("Deleted!", "Product has been deleted.");
     }
   });
 }
-
 function searchProducts(searchInput) {
   let searchTerm = searchInput.value;
-
   let filteredProducts = [];
-
   for (let i = 0; i < productList.length; i++) {
     if (
       productList[i].name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -189,102 +201,166 @@ function searchProducts(searchInput) {
   }
   displayProducts(filteredProducts);
 }
-
 function clearProducts() {
-  Swal.fire({
-    title: "Delete Products?",
-    text: "Are you sure you want to delete All products? This action cannot be undone.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#C62222",
-    cancelButtonColor: "#606773",
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      localStorage.removeItem("productList");
-      productList = [];
-      displayProducts(productList);
+  if (productList.length > 0) {
+    Swal.fire({
+      title: "Delete Products?",
+      text: "Are you sure you want to delete All products? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#C62222",
+      cancelButtonColor: "#606773",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("productList");
+        productList = [];
+        displayProducts(productList);
 
-      Swal.fire({
-        title: "Deleted!",
-        text: "All products have been deleted.",
-        icon: "success",
-      });
-    }
-  });
+        // after delete
+        fireSwalSuccess("Deleted!", "All products have been deleted.");
+      }
+    });
+  } else {
+    // No products to clear
+    fireSwalError("No Products to Clear", "Your product list is empty!");
+  }
 }
-
 function setDataToInputs(index) {
   updateIndex = index;
   let data = productList[index];
-
+  // set data to inputs
   productNameInput.value = data.name;
   productPriceInput.value = data.price;
   productCategoryInput.value = data.category;
   productDescriptionInput.value = data.description;
-
-  // Note: We cannot programmatically set the value of an <input type="file"> to a file path.
-  // It throws an InvalidStateError. We just leave it as is or empty.
-
   // show update button and hide add button
   updateBtn.classList.remove("d-none");
   addBtn.classList.add("d-none");
 }
-
 function updateProduct() {
-  let data = productList[updateIndex];
-
-  data.name = productNameInput.value;
-  data.price = productPriceInput.value;
-  data.category = productCategoryInput.value;
-  data.description = productDescriptionInput.value;
-
-  if (productImageInput.files.length > 0) {
-    data.image = `./images/${productImageInput.files[0]?.name}`;
+  // if all inputs valid then update product
+  if (
+    isProductInputsValid(productRegex.productNameRegex, productNameInput) &&
+    isProductInputsValid(productRegex.productPriceRegex, productPriceInput) &&
+    isProductInputsValid(
+      productRegex.productCategoryRegex,
+      productCategoryInput,
+    ) &&
+    isProductInputsValid(
+      productRegex.productDescriptionRegex,
+      productDescriptionInput,
+    ) &&
+    isProductImageInputValid()
+  ) {
+    let data = productList[updateIndex];
+    data.name = productNameInput.value;
+    data.price = productPriceInput.value;
+    data.category = productCategoryInput.value;
+    data.description = productDescriptionInput.value;
+    if (productImageInput.files.length > 0) {
+      data.image = `./images/${productImageInput.files[0]?.name}`;
+    }
+    // update local storage
+    localStorage.setItem("productList", JSON.stringify(productList));
+    // display products
+    displayProducts(productList);
+    // reset inputs
+    resetAllInputs();
+    // Show add button and hide update button
+    addBtn.classList.remove("d-none");
+    updateBtn.classList.add("d-none");
+    // After product update
+    fireSwalSuccess("Updated!", "Product has been updated successfully.");
+  } else {
+    // Keep individual error messages, just add the new consistent styling
+    if (
+      !isProductInputsValid(productRegex.productNameRegex, productNameInput)
+    ) {
+      fireSwalError("Missing Name", "Please enter a name for the product!");
+    } else if (
+      !isProductInputsValid(productRegex.productPriceRegex, productPriceInput)
+    ) {
+      fireSwalError(
+        "Missing Price",
+        "Please enter a valid price for the product!",
+      );
+    } else if (
+      !isProductInputsValid(
+        productRegex.productCategoryRegex,
+        productCategoryInput,
+      )
+    ) {
+      fireSwalError(
+        "Missing Category",
+        "Please enter a category for the product!",
+      );
+    } else if (
+      !isProductInputsValid(
+        productRegex.productDescriptionRegex,
+        productDescriptionInput,
+      )
+    ) {
+      fireSwalError(
+        "Missing Description",
+        "Please enter a description for the product!",
+      );
+    } else if (!isProductImageInputValid()) {
+      fireSwalError(
+        "Missing Image",
+        "Please choose an image for your product!",
+      );
+    }
   }
-
-  localStorage.setItem("productList", JSON.stringify(productList));
-  displayProducts(productList);
-
-  resetAllInputs();
-
-  // show add button and hide update button
-  addBtn.classList.remove("d-none");
-  updateBtn.classList.add("d-none");
 }
-
-//! Validation For All Inputs
-
+// Validation For All Inputs
 function isProductInputsValid(regex, productInput) {
   if (regex.test(productInput.value)) {
     productInput.classList.add("is-valid");
     productInput.classList.remove("is-invalid");
-
     productInput.nextElementSibling.classList.replace("d-block", "d-none");
     return true;
   } else {
     productInput.classList.add("is-invalid");
     productInput.classList.remove("is-valid");
-
     productInput.nextElementSibling.classList.replace("d-none", "d-block");
     return false;
   }
 }
-
+// Validation For Image Input
 function isProductImageInputValid() {
   if (productImageInput.files.length > 0) {
     productImageInput.classList.add("is-valid");
     productImageInput.classList.remove("is-invalid");
-
     productImageInput.nextElementSibling.classList.replace("d-block", "d-none");
-
     return true;
   } else {
     productImageInput.classList.add("is-invalid");
     productImageInput.classList.remove("is-valid");
-
     productImageInput.nextElementSibling.classList.replace("d-none", "d-block");
-
     return false;
   }
+}
+// reusable swal functions
+function fireSwalError(title, text) {
+  Swal.fire({
+    icon: "error",
+    title: title,
+    text: text,
+    confirmButtonColor: "#C62222",
+    confirmButtonText: "Close",
+    timerProgressBar: true,
+    timer: 2000,
+  });
+}
+function fireSwalSuccess(title, text) {
+  Swal.fire({
+    icon: "success",
+    title: title,
+    text: text,
+    confirmButtonColor: "#10B981",
+    confirmButtonText: "OK",
+    timerProgressBar: true,
+    timer: 2000,
+  });
 }
