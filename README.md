@@ -2,6 +2,8 @@
 
 Stockify is a modern, fast, and intuitive inventory management system designed for small businesses. It provides a simple yet powerful interface to track stock easily and boost productivity, built with a premium SaaS-like aesthetic.
 
+![Stockify Banner](https://stockify-project-tau.vercel.app/images/stockify-social-banner.png)
+
 ## ✨ Features
 
 ### 🛠️ Core Functionality (CRUD)
